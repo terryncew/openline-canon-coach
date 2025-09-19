@@ -1,80 +1,72 @@
 <!doctype html><meta charset="utf-8">
-<title>Canon · Coach · Student — Tuning Viewer</title>
+<title>Canon · Coach · Student — Receipts</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<script type="module" src="https://cdn.jsdelivr.net/gh/terryncew/openline-core@main/receipts-kit/openline-card.js"></script>
+<script type="module"
+  src="https://cdn.jsdelivr.net/gh/terryncew/openline-core@main/receipts-kit/openline-card.js">
+</script>
 <style>
   :root{--bg:#fafafa;--ink:#111;--line:#eee;--muted:#666}
   body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Helvetica,Arial;margin:28px;background:var(--bg);color:var(--ink)}
-  h1{margin:0 0 8px} p.muted{color:var(--muted);margin:0 0 18px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+  h1{margin:0 0 10px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
   .box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
-  details{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff}
-  summary{cursor:pointer;font-weight:600}
-  pre{margin:10px 0 0;background:#111;color:#eee;padding:10px;border-radius:8px;overflow:auto}
   .muted{color:var(--muted);font-size:12px}
 </style>
 
 <h1>Canon · Coach · Student</h1>
-<p class="muted">Shadow → judge by Canon → (maybe) adopt style. Receipts stay clean; payloads live in the toggles.</p>
+<p class="muted">Law is global. Style is local. Shadow → judge by Canon → (maybe) adopt.</p>
 
 <div class="grid">
   <div class="box">
+    <h3 style="margin:0 0 6px">Canon (Law)</h3>
+    <openline-card id="canon-card" mode="compact"></openline-card>
+    <div id="canon-src" class="muted">src: (probing…)</div>
+  </div>
+
+  <div class="box">
     <h3 style="margin:0 0 6px">Tuning Receipt (latest)</h3>
-    <!-- tuning run (accept/reject) -->
-    <openline-card id="tuning" mode="compact" src="./tuning.latest.json"></openline-card>
-
-    <details>
-      <summary>See raw tuning payload</summary>
-      <pre id="tuning-raw">loading…</pre>
-    </details>
-    <div class="muted">src: <code>./tuning.latest.json</code></div>
+    <openline-card id="tuning-card" mode="compact"></openline-card>
+    <div id="tuning-src" class="muted">src: (probing…)</div>
   </div>
 
   <div class="box">
-    <h3 style="margin:0 0 6px">System Receipt (latest)</h3>
-    <!-- general/latest receipt (optional) -->
-    <openline-card id="system" mode="compact" src="./receipt.latest.json"></openline-card>
-
-    <details>
-      <summary>See raw system payload</summary>
-      <pre id="system-raw">loading…</pre>
-    </details>
-    <div class="muted">src: <code>./receipt.latest.json</code></div>
-  </div>
-
-  <div class="box">
-    <h3 style="margin:0 0 6px">Current Style</h3>
-    <details open>
-      <summary>style.json</summary>
-      <pre id="style-json">loading…</pre>
-    </details>
-
-    <details>
-      <summary>Canon (law.json)</summary>
-      <pre id="canon-json">loading…</pre>
-    </details>
-    <div class="muted">Reads files from repo root: <code>style.json</code>, <code>canon/law.json</code></div>
+    <h3 style="margin:0 0 6px">Latest</h3>
+    <openline-card id="latest-card" mode="compact"></openline-card>
+    <div id="latest-src" class="muted">src: (probing…)</div>
   </div>
 </div>
 
 <script>
-  // Pretty-print a JSON file into a <pre>
-  async function loadJSON(path, preId) {
+async function resolveAndSet(cardId, labelId, candidates){
+  const bust = '?v=' + Date.now();
+  for (const base of candidates){
+    const url = base + bust;
     try {
-      const res = await fetch(path + "?v=" + Date.now(), { cache:"no-store" });
-      if (!res.ok) throw new Error(res.status + " " + res.statusText);
-      const obj = await res.json();
-      document.getElementById(preId).textContent = JSON.stringify(obj, null, 2);
-    } catch (e) {
-      document.getElementById(preId).textContent = "Error loading " + path + ": " + e;
-    }
+      const res = await fetch(url, { cache:'no-store' });
+      if (res.ok) {
+        document.getElementById(cardId).setAttribute('src', url);
+        document.getElementById(labelId).textContent = 'src: ' + base;
+        return true;
+      }
+    } catch(e){}
   }
+  document.getElementById(labelId).textContent = 'src: not found (check file path / Pages deploy)';
+  return false;
+}
 
-  // Load raw payloads so the card stays clean
-  loadJSON("./tuning.latest.json",  "tuning-raw");
-  loadJSON("./receipt.latest.json", "system-raw");
+// Try common variants for each artifact.
+// Adjust order if you know your generator’s exact filenames.
+resolveAndSet('canon-card',  'canon-src',  [
+  './canon.json', './receipts/canon.json', './canon/law.json'
+]);
 
-  // Load current style + canon
-  loadJSON("./style.json",          "style-json");
-  loadJSON("./canon/law.json",      "canon-json");
+resolveAndSet('tuning-card', 'tuning-src', [
+  './tuning.latest.json', './receipts/tuning.latest.json',
+  './tuning.json', './receipts/tuning.json'
+]);
+
+resolveAndSet('latest-card', 'latest-src', [
+  './receipt.latest.json', './receipts/receipt.latest.json',
+  './latest.json'
+]);
 </script>
