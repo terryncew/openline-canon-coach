@@ -1,0 +1,16 @@
+{
+  "title": "Tuning Receipt",
+  "status": "OK",
+  "point": "Shadow → judge by Canon → (maybe) adopt style",
+  "because": [
+    "lane: lane1",
+    "old_style: {\"forgiveness\":0.1,\"smoothing\":0.2,\"reflex_order\":[\"rollback\",\"rules_first\",\"retune\"],\"vkd_discount\":0.5}",
+    "new_style: {\"forgiveness\":0.1,\"smoothing\":0.25,\"reflex_order\":[\"rollback\",\"rules_first\",\"retune\"],\"vkd_discount\":0.55}",
+    "sim: {\"false_green\":0.02,\"flap_index\":0.06,\"recovery_halflife\":3,\"exception_rate\":0.01}"
+  ],
+  "but": "",
+  "so": "adopted",
+  "verdict": "accepted",
+  "metrics": { "coherence": { "band": "green" } },
+  "policy": { "use": "demo", "share": "yes", "train": "yes" }
+}
