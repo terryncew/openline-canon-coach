@@ -1,0 +1,3 @@
+{ "title":"Seed latest", "status":"OK", "point":"First load",
+  "because":["init"], "but":"", "so":"ready",
+  "metrics":{"coherence":{"band":"green"}}, "policy":{"use":"demo","share":"yes","train":"no"} }
