@@ -1,0 +1,9 @@
+{ "title":"Canon (Law)", "status":"OK", "point":"Publish fixed law for all students",
+  "because":[
+    "bands: green<=0.40, yellow<=0.70, red>=0.70",
+    "monotone risk, min dwell=3",
+    "exceptions rare (<=2%) and expiring (<=7d)"
+  ],
+  "but":"", "so":"public, versioned",
+  "metrics":{"coherence":{"band":"green"}}, "policy":{"use":"demo","share":"yes","train":"no"}
+}
